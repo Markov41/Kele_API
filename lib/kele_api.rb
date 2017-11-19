@@ -30,6 +30,28 @@ class KeleApi
     @mentor_availability = JSON.parse(response.body)
   end
   
+  def get_messages(page=nil)
+    if page == nil
+    response = self.class.get(base_api_endpoint("message_threads"), headers: { "authorization" => @auth_token })
+    else
+    response = self.class.get(base_api_endpoint("message_threads"), body: {"page" => page}, headers: { "authorization" => @auth_token })
+    end
+    @messages = JSON.parse(response.body)
+  end
+  
+  def create_message(sender, recipient_id, token=nil, subject, stripped_text)
+    response = self.class.post(base_api_endpoint("messages"),
+    body: {
+      "sender": sender,
+      "recipient_id": recipient_id,
+      "token": token,
+      "subject": subject,
+      "stripped-text": stripped_text
+    },
+    headers: {"authorization" => @auth_token})
+    JSON.parse(response.body)
+  end
+  
   
   private
 
